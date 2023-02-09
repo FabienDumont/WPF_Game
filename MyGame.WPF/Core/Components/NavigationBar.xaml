@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="MyGame.WPF.Core.Components.NavigationBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MyGame.WPF.Core.Components"
+             mc:Ignorable="d"
+             Background="#1f1f2e"
+             d:DesignWidth="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <RadioButton Grid.Column="0"
+                     Content="Premier écran"
+                     Background="#34344c"
+                     IsChecked="True"
+                     Style="{StaticResource MenuRadioButtonTheme}"
+                     Command="{Binding GameNavigateCommand}"/>
+    </Grid>
+</UserControl>

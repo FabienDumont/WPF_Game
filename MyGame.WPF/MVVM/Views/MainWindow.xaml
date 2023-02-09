@@ -1,0 +1,41 @@
+﻿<Window x:Class="MyGame.WPF.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyGame.WPF.MVVM.Views"
+        xmlns:viewmodels="clr-namespace:MyGame.WPF.MVVM.ViewModels"
+        xmlns:components="clr-namespace:MyGame.WPF.Core.Components"
+        xmlns:contentControls="clr-namespace:MVVMEssentials.ContentControls;assembly=MVVMEssentials"
+        mc:Ignorable="d"
+        Background="#3e3e5b"
+        Title="Template WPF MVVM" Height="450" Width="800">
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type viewmodels:MainMenuVm}">
+                <local:MainMenuView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:CreateCharacterVm}">
+                <local:CreateCharacterView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:GameVm}">
+                <local:GameView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:CharacterVm}">
+                <local:CharacterView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:InventoryVm}">
+                <local:InventoryView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:LayoutVm}">
+                <components:Layout/>
+            </DataTemplate>
+        </Grid.Resources>
+        
+        <contentControls:Modal Panel.ZIndex="1" IsOpen="{Binding IsOpen}">
+            <ContentControl Content="{Binding CurrentModalViewModel}" />
+        </contentControls:Modal>
+        
+        <ContentControl Content="{Binding CurrentViewModel}"/>
+    </Grid>
+</Window>
