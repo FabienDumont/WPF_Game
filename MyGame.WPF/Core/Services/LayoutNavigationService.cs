@@ -2,7 +2,6 @@
 using MVVMEssentials.Services;
 using MVVMEssentials.Stores;
 using MVVMEssentials.ViewModels;
-using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.ViewModels;
 
 namespace MyGame.WPF.Core.Services;

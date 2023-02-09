@@ -14,12 +14,20 @@
         <PackageReference Include="FabienDumont_MVVMEssentials.WPF" Version="1.3.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     </ItemGroup>
 
     <ItemGroup>
         <None Update="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Images\BaseFemale.png" />
+      <Resource Include="Resources\Images\BaseFemale.png" />
+      <None Remove="Resources\Images\BaseMale.png" />
+      <Resource Include="Resources\Images\BaseMale.png" />
     </ItemGroup>
 
 </Project>

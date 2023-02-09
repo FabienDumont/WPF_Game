@@ -10,8 +10,7 @@
                                 BorderThickness="0"
                                 CornerRadius="2">
 
-                            <TextBlock Style="{StaticResource TextBlockTheme}"
-                                       Text="{TemplateBinding Content}"
+                            <TextBlock Text="{TemplateBinding Content}"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"
                                        Margin="5" />

@@ -14,11 +14,15 @@ public class SaveStore {
         }
     }
 
-    public bool IsUsed => CurrentSave != null;
+    public bool IsPlaying => CurrentSave != null;
 
     public event Action? CurrentSaveChanged;
 
-    public void StopUsing() {
+    public void StopPlaying() {
         CurrentSave = null;
+    }
+
+    public void Refresh() {
+        CurrentSave = CurrentSave;
     }
 }

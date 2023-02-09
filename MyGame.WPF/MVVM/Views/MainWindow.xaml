@@ -9,7 +9,7 @@
         xmlns:contentControls="clr-namespace:MVVMEssentials.ContentControls;assembly=MVVMEssentials"
         mc:Ignorable="d"
         Background="#3e3e5b"
-        Title="Template WPF MVVM" Height="450" Width="800">
+        Title="WPF Game" Height="1000" Width="1800">
     <Grid>
         <Grid.Resources>
             <DataTemplate DataType="{x:Type viewmodels:MainMenuVm}">
@@ -26,6 +26,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:InventoryVm}">
                 <local:InventoryView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:InformationVm}">
+                <local:InformationView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:LayoutVm}">
                 <components:Layout/>

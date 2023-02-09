@@ -12,12 +12,10 @@
                         VerticalAlignment="Center" 
                         HorizontalAlignment="Center">
                 <TextBlock Text="Inventory"
-                           HorizontalAlignment="Center"
-                           Style="{StaticResource TextBlockTheme}"/>
+                           HorizontalAlignment="Center"/>
                 <Button Margin="0,10,0,0"
                         Content="Return"
-                        Command="{Binding ReturnCommand}"
-                        Style="{StaticResource ButtonTheme}"/>
+                        Command="{Binding ReturnCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

@@ -2,8 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type TextBox}"
-           BasedOn="{StaticResource {x:Type TextBox}}"
-           x:Key="TextBoxTheme">
+           BasedOn="{StaticResource {x:Type TextBox}}">
         <Style.Setters>
             <Setter Property="Template">
                 <Setter.Value>
@@ -23,6 +22,7 @@
                                     FontFamily="Century Gothic"
                                     Foreground="#CFCFCF"
                                     CaretBrush="#CFCFCF"
+                                    Style="{x:Null}"
                                     x:Name="InputBox" />
 
                                 <TextBlock IsHitTestVisible="False"

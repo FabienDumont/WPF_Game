@@ -6,66 +6,335 @@
              xmlns:local="clr-namespace:MyGame.WPF.MVVM.Views"
              Background="Transparent"
              mc:Ignorable="d">
-    <Grid>
-        
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="#2D2D30">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        
-        <Grid Grid.Column="0">
+
+        <Grid Grid.Column="0"
+              Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" 
+
+            <StackPanel Grid.Row="0"
                         Orientation="Vertical">
+                <TextBlock HorizontalAlignment="Center"
+                           Text="{Binding Date, Mode=OneWay, StringFormat={}{0:dddd dd.MM.yyyy hh:mm tt }}" />
+
                 <Button Content="Character"
                         Width="120"
-                        Style="{StaticResource ButtonTheme}"
-                        Command="{Binding CharacterNavigateCommand}"/>
+                        Margin="0 10 0 0"
+                        Command="{Binding CharacterNavigateCommand}"
+                        CommandParameter="{Binding Player}"/>
+
                 <Button Content="Inventory"
                         Width="120"
                         Margin="0 10 0 0"
-                        Style="{StaticResource ButtonTheme}"
-                        Command="{Binding InventoryNavigateCommand}"/>
+                        Command="{Binding InventoryNavigateCommand}" />
+                
+                <TextBlock HorizontalAlignment="Center"
+                           Margin="0 20 0 0">
+                    <Run Text="Money : " />
+                    <Run Text="{Binding Player.Money, Mode=OneWay}" />
+                    <Run Text="$" />
+                </TextBlock>
+                
+                <TextBlock HorizontalAlignment="Center"
+                           Margin="0 10 0 0">
+                    <Run Text="Energy : " />
+                    <Run Text="{Binding Player.Stats.Energy, Mode=OneWay}" />
+                </TextBlock>
             </StackPanel>
-            
-            <StackPanel Grid.Row="2" 
+
+            <StackPanel Grid.Row="2"
                         Orientation="Vertical">
                 <Button Content="Save Game"
                         Width="120"
-                        Style="{StaticResource ButtonTheme}"
-                        Command="{Binding SaveGameCommand}"/>
+                        Command="{Binding SaveGameCommand}" />
                 <Button Content="Load Game"
                         Width="120"
                         Margin="0 10 0 0"
-                        Style="{StaticResource ButtonTheme}"
-                        Command="{Binding LoadGameCommand}"/>
+                        Command="{Binding LoadGameCommand}" />
                 <Button Content="Main Menu"
                         Width="120"
                         Margin="0 10 0 0"
-                        Style="{StaticResource ButtonTheme}"
-                        Command="{Binding MainMenuNavigateCommand}"/>
+                        Command="{Binding MainMenuNavigateCommand}" />
             </StackPanel>
         </Grid>
-        
-        <Grid Grid.Column="1" VerticalAlignment="Center">
-            <StackPanel Orientation="Vertical" 
-                        VerticalAlignment="Center" 
-                        HorizontalAlignment="Center"
-                        Margin="0 20 0 0">
-                <TextBlock Text="Game"
-                           HorizontalAlignment="Center"
-                           Style="{StaticResource TextBlockTheme}" />
-            </StackPanel>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0"
+                  Background="#535359">
+                <Image Width="350"
+                       Height="350"
+                       Margin="0,5,25,0"
+                       Source="{Binding ImagePath}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top" />
+                <ScrollViewer ScrollChanged="ScrollViewer_ScrollChanged">
+                    <ItemsControl ItemsSource="{Binding Path=DisplayedTextLines}"
+                                  Margin="10">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding Path=TextParts}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Item2}"
+                                                       FontSize="16"
+                                                       Margin="0,2,0,0">
+
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=Item1}" />
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  Background="#333337">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <ListView Grid.Row="0"
+                          ItemsSource="{Binding ActionChoices}"
+                          Background="Transparent"
+                          BorderBrush="Transparent"
+                          Visibility="{Binding Path=PlayerCanAct, Converter={StaticResource BoolToVisConverter}}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Grid MinWidth="120">
+                                            <Button Margin="5,0,0,0"
+                                                    Width="Auto"
+                                                    Content="{Binding}"
+                                                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.MakeChoiceCommand}"
+                                                    CommandParameter="{Binding}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding MovementsChoices}"
+                          Background="Transparent"
+                          BorderBrush="Transparent"
+                          Visibility="{Binding Path=PlayerCanAct, Converter={StaticResource BoolToVisConverter}}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Grid MinWidth="120">
+                                            <Button Margin="5,0,0,0"
+                                                    Width="Auto"
+                                                    Content="{Binding}"
+                                                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.MakeChoiceCommand}"
+                                                    CommandParameter="{Binding}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+            </Grid>
+            <Grid Grid.Row="1"
+                  Background="#333337"
+                  Visibility="{Binding Path=IsInNpcInteraction, Converter={StaticResource BoolToVisConverter}}">
+                <ListView ItemsSource="{Binding ActionChoices}"
+                          Background="Transparent"
+                          BorderBrush="Transparent">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Button Width="500"
+                                                Margin="5,0,0,5"
+                                                Content="{Binding}"
+                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.TalkCommand}"
+                                                CommandParameter="{Binding}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+            </Grid>
         </Grid>
-        
-        <StackPanel Grid.Column="2" 
-                    Orientation="Vertical">
-            
-        </StackPanel>
+
+        <Grid Grid.Column="2"
+              Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="6*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       HorizontalAlignment="Center"
+                       Text="{Binding LocationName}" />
+
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding NpcsInLocation}"
+                      Margin="10"
+                      Background="Transparent"
+                      BorderBrush="Transparent">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center">
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Color="{Binding Color}" />
+                                            </TextBlock.Foreground>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat=" {0} ({1})">
+                                                    <Binding Path="Name" />
+                                                    <Binding Path="Age" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <Button Width="Auto"
+                                                Margin="5 0 0 0"
+                                                Content="View"
+                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.CharacterNavigateCommand}"
+                                                CommandParameter="{Binding}" />
+                                        <Button Width="Auto"
+                                                Margin="5 0 0 0"
+                                                Content="Talk"
+                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.EngageTalkCommand}"
+                                                CommandParameter="{Binding}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+
+            <Grid Grid.Row="1"
+                  Background="#2D2D30"
+                  Visibility="{Binding Path=IsInChat, Converter={StaticResource BoolToVisConverter}}">
+                <StackPanel Orientation="Vertical">
+                    <Image Width="200"
+                           Source="{Binding NpcAction.ImagePath}" />
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <Run Text="Talking with" />
+                        <Run Text="{Binding NpcAction.Name}" />
+                    </TextBlock>
+                    <Button Width="60"
+                            Margin="0 10 0 0"
+                            Content="View"
+                            Command="{Binding CharacterNavigateCommand}"
+                            CommandParameter="{Binding NpcAction}" />
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0 10 0 0">
+                        <Run Text="Relationship :" />
+                        <Run Text="{Binding NpcAction.Relationship}" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
     </Grid>
 </UserControl>

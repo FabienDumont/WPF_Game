@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Navigation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,42 +41,39 @@ public partial class App {
                 // Services creation to allow ViewModels to navigate from one to another
 
                 services.AddTransient<MainMenuVm>(
-                    s => new MainMenuVm(s.GetRequiredService<SaveStore>(),
-                        s.GetRequiredService<NavigationService<CreateCharacterVm>>(),
-                        s.GetRequiredService<NavigationService<GameVm>>())
+                    s => new MainMenuVm(
+                        s.GetRequiredService<SaveStore>(), s.GetRequiredService<StringStore>(), s.GetRequiredService<NavigationService<CreateCharacterVm>>(),
+                        s.GetRequiredService<NavigationService<GameVm>>(), CreateInformationNavigationService(s)
+                    )
                 );
 
-                services.AddSingleton(s =>
-                    new NavigationService<MainMenuVm>(s.GetRequiredService<NavigationStore>(),
-                        s.GetRequiredService<MainMenuVm>));
+                services.AddSingleton(s => new NavigationService<MainMenuVm>(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<MainMenuVm>));
 
                 services.AddTransient<CreateCharacterVm>(
-                    s => new CreateCharacterVm(s.GetRequiredService<SaveStore>(),
-                        s.GetRequiredService<NavigationService<GameVm>>())
+                    s => new CreateCharacterVm(s.GetRequiredService<SaveStore>(), s.GetRequiredService<NavigationService<GameVm>>())
                 );
 
-                services.AddSingleton(s =>
-                    new NavigationService<CreateCharacterVm>(s.GetRequiredService<NavigationStore>(),
-                        s.GetRequiredService<CreateCharacterVm>));
+                services.AddSingleton(
+                    s => new NavigationService<CreateCharacterVm>(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<CreateCharacterVm>)
+                );
 
-                services.AddTransient(s => new GameVm(s.GetRequiredService<SaveStore>(),
-                    s.GetRequiredService<CharacterStore>(),
-                    CreateCharacterNavigationService(s),
-                    CreateInventoryNavigationService(s),
-                    s.GetRequiredService<NavigationService<MainMenuVm>>()));
+                services.AddTransient(
+                    s => new GameVm(
+                        s.GetRequiredService<SaveStore>(), s.GetRequiredService<StringStore>(), s.GetRequiredService<CharacterStore>(),
+                        CreateCharacterNavigationService(s), CreateInventoryNavigationService(s), s.GetRequiredService<NavigationService<MainMenuVm>>(),
+                        CreateInformationNavigationService(s)
+                    )
+                );
 
-                services.AddSingleton(s =>
-                    new NavigationService<GameVm>(s.GetRequiredService<NavigationStore>(),
-                        s.GetRequiredService<GameVm>));
+                services.AddSingleton(s => new NavigationService<GameVm>(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<GameVm>));
 
+                services.AddTransient(s => new CharacterVm(s.GetRequiredService<CharacterStore>(), s.GetRequiredService<CloseModalNavigationService>()));
                 services.AddTransient(s => new InventoryVm(s.GetRequiredService<CloseModalNavigationService>()));
-                services.AddTransient(s => new CharacterVm(s.GetRequiredService<CharacterStore>(),
-                    s.GetRequiredService<CloseModalNavigationService>()));
+                services.AddTransient(s => new InformationVm(s.GetRequiredService<StringStore>(), s.GetRequiredService<CloseModalNavigationService>()));
+                
 
                 // Nav Bar
-                services.AddTransient(
-                    s => new NavigationBarVm(CreateGameNavigationService(s))
-                );
+                services.AddTransient(s => new NavigationBarVm(CreateGameNavigationService(s)));
 
                 // Creation of the Main Window which can display the User Controls
                 services.AddSingleton<MainVm>();
@@ -89,8 +85,7 @@ public partial class App {
     protected override void OnStartup(StartupEventArgs e) {
         _host.Start();
 
-        INavigationService mainMenuNavigationService =
-            _host.Services.GetRequiredService<NavigationService<MainMenuVm>>();
+        INavigationService mainMenuNavigationService = _host.Services.GetRequiredService<NavigationService<MainMenuVm>>();
         mainMenuNavigationService.Navigate();
 
         // Showing the main Window
@@ -121,6 +116,12 @@ public partial class App {
     private static INavigationService CreateInventoryNavigationService(IServiceProvider serviceProvider) {
         return new ModalNavigationService<InventoryVm>(
             serviceProvider.GetRequiredService<ModalNavigationStore>(), serviceProvider.GetRequiredService<InventoryVm>
+        );
+    }
+
+    private static INavigationService CreateInformationNavigationService(IServiceProvider serviceProvider) {
+        return new ModalNavigationService<InformationVm>(
+            serviceProvider.GetRequiredService<ModalNavigationStore>(), serviceProvider.GetRequiredService<InformationVm>
         );
     }
 }

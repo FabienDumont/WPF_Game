@@ -71,7 +71,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type ComboBox}" x:Key="ComboBoxTheme">
+    <Style TargetType="{x:Type ComboBox}">
         <Setter Property="UIElement.SnapsToDevicePixels"
                 Value="True" />
         <Setter Property="FrameworkElement.OverridesDefaultStyle"

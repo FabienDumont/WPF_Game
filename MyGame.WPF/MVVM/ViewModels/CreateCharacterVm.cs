@@ -1,13 +1,13 @@
 using System;
-using System.IO;
-using System.Text.Json;
+using System.Collections.Generic;
 using System.Windows.Input;
-using MVVMEssentials.Commands;
+using System.Windows.Media;
 using MVVMEssentials.Services;
 using MVVMEssentials.ViewModels;
 using MyGame.WPF.Core.Commands;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
+using MyGame.WPF.MVVM.Models.Situations.Home;
 
 namespace MyGame.WPF.MVVM.ViewModels;
 
@@ -25,23 +25,31 @@ public class CreateCharacterVm : BaseVm {
     public ICommand CreateCharacterCommand { get; set; }
 
     public CreateCharacterVm(SaveStore saveStore, INavigationService gameNavigationService) {
-        CreateCharacterCommand = new RelayCommand(parameters => {
-            Character player = new Character {
-                Name = _name
-            };
+        CreateCharacterCommand = new RelayCommand(
+            parameter => {
+                Character player = new Character { Name = _name };
 
-            saveStore.CurrentSave = new Save {
-                Player = new Character {
-                    Name = _name
-                },
-                World = new World {
-                    Date = new DateTime(2023, 1, 1)
-                }
-            };
+                saveStore.CurrentSave = new Save { World = { Player = new Character { Name = _name } } };
+                
+                Npc npc = new() { Name = "Test"};
 
-            new SaveCommand(saveStore).Execute(null);
+                npc.Schedule.Add(
+                    new Tuple<string, DayOfWeek, TimeSpan, TimeSpan, bool>(
+                        LivingRoomSituation.Instance.LocationName, DayOfWeek.Sunday, new TimeSpan(9, 0, 0), new TimeSpan(10, 0, 0), false
+                    )
+                );
 
-            gameNavigationService.Navigate();
-        });
+                saveStore.CurrentSave!.World.Npcs.Add(npc);
+                
+                Textline textline = new Textline();
+                textline.TextParts.Add(new Tuple<System.Windows.Media.Color, string>(Colors.White, "You wake up."));
+                List<Textline> textlines = new();
+                textlines.Add(textline);
+                saveStore.CurrentSave!.SetSerializableTextLines(textlines);
+                
+                new SaveGameCommand(saveStore).Execute(null);
+                gameNavigationService.Navigate();
+            }
+        );
     }
 }

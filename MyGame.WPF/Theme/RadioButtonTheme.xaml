@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style TargetType="{x:Type RadioButton}"
-           x:Key="RadioButtonTheme">
+    <Style TargetType="{x:Type RadioButton}">
         <Style.Setters>
             <Setter Property="Template">
                 <Setter.Value>
@@ -10,8 +9,7 @@
                                 BorderThickness="0"
                                 CornerRadius="2">
 
-                            <TextBlock Style="{StaticResource TextBlockTheme}"
-                                       Text="{TemplateBinding Content}"
+                            <TextBlock Text="{TemplateBinding Content}"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"
                                        Margin="5"/>
