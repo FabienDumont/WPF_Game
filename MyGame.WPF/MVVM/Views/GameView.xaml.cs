@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace MyGame.WPF.MVVM.Views;
 
-public partial class GameView : UserControl {
+public partial class GameView {
     public GameView() {
         InitializeComponent();
     }
@@ -12,7 +12,7 @@ public partial class GameView : UserControl {
 
     private void ScrollViewer_ScrollChanged(Object sender, ScrollChangedEventArgs e) {
         if (e.ExtentHeightChange == 0) {
-            if (((ScrollViewer)sender).VerticalOffset == ((ScrollViewer)sender).ScrollableHeight) {
+            if (Math.Abs(((ScrollViewer)sender).VerticalOffset - ((ScrollViewer)sender).ScrollableHeight) < 0.01) {
                 _autoScroll = true;
             }
             else {

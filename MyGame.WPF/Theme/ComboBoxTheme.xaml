@@ -72,9 +72,9 @@
     </ControlTemplate>
 
     <Style TargetType="{x:Type ComboBox}">
-        <Setter Property="UIElement.SnapsToDevicePixels"
+        <Setter Property="SnapsToDevicePixels"
                 Value="True" />
-        <Setter Property="FrameworkElement.OverridesDefaultStyle"
+        <Setter Property="OverridesDefaultStyle"
                 Value="True" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
                 Value="Auto" />
@@ -92,9 +92,9 @@
                 Value="Light" />
         <Setter Property="FontFamily"
                 Value="Century Gothic" />
-        <Setter Property="FrameworkElement.FocusVisualStyle"
+        <Setter Property="FocusVisualStyle"
                 Value="{x:Null}" />
-        <Setter Property="Control.Template">
+        <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>

@@ -1,8 +1,6 @@
-using System.Windows.Controls;
-
 namespace MyGame.WPF.MVVM.Views; 
 
-public partial class CreateCharacterView : UserControl {
+public partial class CreateCharacterView {
     public CreateCharacterView() {
         InitializeComponent();
     }

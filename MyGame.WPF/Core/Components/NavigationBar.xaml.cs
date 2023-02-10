@@ -1,8 +1,6 @@
-﻿using System.Windows.Controls;
+﻿namespace MyGame.WPF.Core.Components;
 
-namespace MyGame.WPF.Core.Components;
-
-public partial class NavigationBar : UserControl {
+public partial class NavigationBar {
     public NavigationBar() {
         InitializeComponent();
     }

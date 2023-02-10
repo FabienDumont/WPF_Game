@@ -9,7 +9,7 @@ using Color = System.Drawing.Color;
 namespace MyGame.WPF.MVVM.Models;
 
 public class Save {
-    public World World { get; set; } = new();
+    public World World { get; set; }
     public Situation Situation { get; set; } = YourBedroomSituation.Instance;
     public Npc? NpcAction { get; set; } = null;
     public string? ImagePath { get; set; }
@@ -44,6 +44,10 @@ public class Save {
 
     public bool PlayerCanAct { get; set; } = true;
     public bool TalkingBlocked { get; set; } = false;
+    
+    public Save(World world) {
+        World = world;
+    }
 
     public List<Textline> GetTextLines() {
         List<Textline> textlines = new();
@@ -85,5 +89,11 @@ public class Save {
         }
 
         SerializableTextLines.Add(textLineSerializable);
+    }
+
+    public void AddBlankTextline() {
+        Textline textline = new();
+        textline.TextParts.Add(new Tuple<System.Windows.Media.Color, string>(System.Windows.Media.Colors.White, ""));
+        AddSerializableTextLines(textline);
     }
 }

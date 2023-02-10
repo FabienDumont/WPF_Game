@@ -1,8 +1,6 @@
-﻿using System.Windows.Controls;
+﻿namespace MyGame.WPF.Core.Components;
 
-namespace MyGame.WPF.Core.Components;
-
-public partial class Layout : UserControl {
+public partial class Layout {
     public Layout() {
         InitializeComponent();
     }

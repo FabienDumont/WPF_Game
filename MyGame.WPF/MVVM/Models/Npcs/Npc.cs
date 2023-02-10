@@ -11,7 +11,7 @@ public class Npc : Character {
     public Tuple<string, bool>? GetLocation(DateTime date) {
         foreach (Tuple<string, DayOfWeek, TimeSpan, TimeSpan, bool> record in Schedule) {
             if (record.Item2.Equals(date.DayOfWeek)) {
-                if (date.TimeOfDay >= record.Item3 && date.TimeOfDay < record.Item4) {
+                if (date.TimeOfDay >= record.Item3 && date.TimeOfDay <= record.Item4) {
                     return new Tuple<string, bool>(record.Item1, record.Item5);
                 }
             }

@@ -17,7 +17,6 @@ namespace MyGame.WPF.Core.Helpers;
 public static class ActionHelper {
     public static async Task HandleGreeting(SaveStore saveStore, StringStore stringStore, INavigationService informationNavigationService) {
         Save save = saveStore.CurrentSave!;
-        Character player = save.World.Player;
         Npc npc = save.NpcAction!;
 
         var textline = new Textline();
@@ -95,58 +94,21 @@ public static class ActionHelper {
 
     public static async Task HandleTalk(SaveStore saveStore, StringStore stringStore, INavigationService informationNavigationService, TalkAction? action) {
         Save save = saveStore.CurrentSave!;
-        Character player = save.World.Player;
         Npc npc = save.NpcAction!;
         bool endConversation = false;
 
         save.PlayerCanAct = false;
-        
+
         var textline = new Textline();
+
+        TalkAction? talkAction = null;
+        TalkActionResult? talkActionResult = null;
 
         try {
             if (action is not null) {
-                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MyGame.WPF.Resources.JSON.TalkActions.Npc.json") ??
-                                throw new InvalidOperationException("The file TalkActions/Npc.json doesn't exist.");
+                List<TalkAction> talkActions = GetTalkActions(save, npc);
 
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-
-                List<TalkAction> talkActions = JsonConvert.DeserializeObject<List<TalkAction>>(result)!;
-
-                string? filePathCustom = npc switch {
-                    CustomNpc => $"MyGame.WPF.Resources.JSON.TalkActions.{nameof(CustomNpc)}.json",
-                    _ => null
-                };
-
-                if (filePathCustom is not null) {
-                    stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filePathCustom) ??
-                             throw new InvalidOperationException($"Couldn't find {filePathCustom}.");
-
-                    reader = new StreamReader(stream);
-                    result = reader.ReadToEnd();
-
-                    List<TalkAction> talkActionsCustom = JsonConvert.DeserializeObject<List<TalkAction>>(result)!;
-
-                    foreach (TalkAction ta in talkActions) {
-                        foreach (TalkAction gTa in talkActionsCustom) {
-                            if (gTa.Id == ta.Id) {
-                                if (gTa.PlayerDialog is not null) {
-                                    ta.PlayerDialog = gTa.PlayerDialog;
-                                }
-
-                                if (gTa.Results is not null) {
-                                    ta.Results = gTa.Results;
-                                }
-                            }
-
-                            if (talkActions.All(x => x.Id != gTa.Id)) {
-                                talkActions.Add(gTa);
-                            }
-                        }
-                    }
-                }
-
-                TalkAction talkAction = talkActions.FirstOrDefault(ta => ta.Id == action.Id)!;
+                talkAction = talkActions.FirstOrDefault(ta => ta.Id == action.Id)!;
 
                 if (talkAction.EndConversation == true) {
                     endConversation = true;
@@ -154,34 +116,60 @@ public static class ActionHelper {
 
                 if (talkAction.PlayerDialog is not null) {
                     textline = new();
-                    textline.TextParts.Add(new Tuple<Color, string>(player.Color, talkAction.PlayerDialog));
+                    textline.TextParts.Add(new Tuple<Color, string>(Colors.Honeydew, talkAction.PlayerDialog));
                     save.AddSerializableTextLines(textline);
                     saveStore.Refresh();
                     await Task.Delay(500);
                 }
 
+
                 foreach (TalkActionResult taR in talkAction.Results!) {
                     if (npc.Relationship >= taR.MinRelationship && npc.Relationship < taR.MaxRelationship) {
-                        
-                        if (taR.NpcDialog is not null) {
-                            textline = new();
-                            textline.TextParts.Add(new Tuple<Color, string>(player.Color, taR.NpcDialog));
-                            save.AddSerializableTextLines(textline);
-                            saveStore.Refresh();
-                            await Task.Delay(500);
-                        }
+                        talkActionResult = taR;
                     }
                 }
+
+                if (talkActionResult!.EffectRelationship is not null) {
+                    npc.Relationship += talkActionResult.EffectRelationship ?? default(int);
+                }
+                
+                if (talkActionResult.AddedMinutes is not null) {
+                    save.World.Date = save.World.Date.AddMinutes(talkActionResult.AddedMinutes ?? default(int));
+                }
+
+                if (talkActionResult.NpcDialog is not null) {
+                    textline = new();
+                    textline.TextParts.Add(new Tuple<Color, string>(npc.Color, talkActionResult.NpcDialog));
+                    save.AddSerializableTextLines(textline);
+                    saveStore.Refresh();
+                    await Task.Delay(500);
+                }
+            }
+            
+            if (npc.GetLocation(save.World.Date) == null || !npc.GetLocation(save.World.Date)!.Item1.Equals(save.Situation.LocationName)) {
+                endConversation = true;
+                
+                textline = new();
+                textline.TextParts.Add(new Tuple<Color, string>(npc.Color, "Sorry, I have to go."));
+                save.AddSerializableTextLines(textline);
+                saveStore.Refresh();
+                await Task.Delay(500);
             }
 
+            save.AddBlankTextline();
+
             if (!endConversation) {
-                SetTalkAction(save, npc);
+                if (talkAction == null || talkActionResult == null || talkActionResult.Success == null || talkActionResult.Success == false) {
+                    SetPossibleTalkActions(save, npc);
+                } else if (talkAction.NextTalkActions.Count > 0) {
+                    SetNextTalkActions(save, npc, talkAction.NextTalkActions);
+                }
             } else {
                 save.PossibleTalkActions.Clear();
                 save.IsInChat = false;
                 save.NpcAction = null;
             }
-            
+
             save.PlayerCanAct = true;
             saveStore.Refresh();
         } catch (Exception e) {
@@ -190,10 +178,33 @@ public static class ActionHelper {
         }
     }
 
-    public static void SetTalkAction(Save save, Npc npc) {
-        
+    private static void SetNextTalkActions(Save save, Npc npc, List<NextTalkAction> nextTalkActions) {
         save.PossibleTalkActions.Clear();
-        
+
+        List<TalkAction> talkActions = GetTalkActions(save, npc);
+
+        foreach (TalkAction ta in talkActions) {
+            foreach (NextTalkAction nTa in nextTalkActions) {
+                if (ta.Id == nTa.NextActionId && ta.NeedPrevious == true) {
+                    save.PossibleTalkActions.Add(ta);
+                }
+            }
+        }
+    }
+
+    public static void SetPossibleTalkActions(Save save, Npc npc) {
+        save.PossibleTalkActions.Clear();
+
+        List<TalkAction> talkActions = GetTalkActions(save, npc);
+
+        foreach (TalkAction ta in talkActions) {
+            if (ta.NeedPrevious is null) {
+                save.PossibleTalkActions.Add(ta);
+            }
+        }
+    }
+
+    public static List<TalkAction> GetTalkActions(Save save, Npc npc) {
         Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MyGame.WPF.Resources.JSON.TalkActions.Npc.json") ??
                         throw new InvalidOperationException("The file TalkActions/Npc.json doesn't exist.");
 
@@ -222,6 +233,14 @@ public static class ActionHelper {
                         if (gTa.Label is not null) {
                             ta.Label = gTa.Label;
                         }
+
+                        if (gTa.PlayerDialog is not null) {
+                            ta.PlayerDialog = gTa.PlayerDialog;
+                        }
+
+                        if (gTa.Results is not null) {
+                            ta.Results = gTa.Results;
+                        }
                     }
 
                     if (talkActions.All(x => x.Id != gTa.Id)) {
@@ -231,8 +250,6 @@ public static class ActionHelper {
             }
         }
 
-        foreach (TalkAction ta in talkActions) {
-            save.PossibleTalkActions.Add(ta);
-        }
+        return talkActions;
     }
 }

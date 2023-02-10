@@ -46,14 +46,14 @@ public class LoadGameCommand : BaseCommand {
         }
     }
 
-    public static T ReadFromJsonFile<T>(string filePath) {
-        T result;
+    public static T? ReadFromJsonFile<T>(string filePath) {
+        T? result;
         using (StreamReader file = File.OpenText(filePath)) {
             JsonSerializer serializer = new JsonSerializer();
             serializer.TypeNameHandling = TypeNameHandling.Objects;
             serializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
             serializer.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-            result = (T)serializer.Deserialize(file, typeof(T));
+            result = (T?)serializer.Deserialize(file, typeof(T));
         }
 
         return result;

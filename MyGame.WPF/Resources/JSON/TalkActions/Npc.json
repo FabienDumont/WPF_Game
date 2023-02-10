@@ -1,5 +1,70 @@
 [
   {
+    "Id": 1,
+    "Label": "Ask something",
+    "PlayerDialog": "Can I ask you something ?",
+    "Results": [
+      {
+        "NpcDialog": "No, I don't like you.",
+        "MinRelationship": -999,
+        "MaxRelationship": 0,
+        "Success": false
+      },
+      {
+        "NpcDialog": "Yeah sure.",
+        "MinRelationship": 0,
+        "MaxRelationship": 999,
+        "Success": true
+      }
+    ],
+    "NextTalkActions": [
+      {
+        "NextActionId": 2
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "Label": "Ask what is love",
+    "NeedPrevious" : true,
+    "PlayerDialog": "What is love ?",
+    "Results": [
+      {
+        "NpcDialog": "I don't know.",
+        "MinRelationship": -999,
+        "MaxRelationship": 999
+      }
+    ]
+  },
+  {
+    "Id": 10,
+    "Label": "Praise",
+    "PlayerDialog": "You are great !",
+    "Results": [
+      {
+        "NpcDialog": "Thank you !",
+        "MinRelationship": -999,
+        "MaxRelationship": 999,
+        "EffectRelationship": 10,
+        "AddedMinutes": 1
+      }
+    ]
+  },
+  {
+    "Id": 20,
+    "Label": "Insult",
+    "PlayerDialog": "You are dumb !",
+    "Results": [
+      {
+        "NpcDialog": "Get lost.",
+        "MinRelationship": -999,
+        "MaxRelationship": 999,
+        "EffectRelationship": -10,
+        "AddedMinutes": 30
+      }
+    ]
+  },
+  {
     "Id": 999,
     "Label": "Say goodbye",
     "EndConversation": true,

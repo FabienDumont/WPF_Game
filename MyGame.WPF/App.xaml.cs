@@ -18,7 +18,6 @@ namespace MyGame.WPF;
 /// </summary>
 public partial class App {
     private readonly IHost _host;
-    private readonly ServiceProvider _serviceProvider;
 
     public App() {
         _host = Host.CreateDefaultBuilder().ConfigureAppConfiguration(
@@ -27,7 +26,7 @@ public partial class App {
                 c.AddEnvironmentVariables();
             }
         ).ConfigureServices(
-            (context, services) => {
+            (_, services) => {
                 // Store classes to send information through ViewModels
                 services.AddSingleton<NavigationStore>();
                 services.AddSingleton<ModalNavigationStore>();

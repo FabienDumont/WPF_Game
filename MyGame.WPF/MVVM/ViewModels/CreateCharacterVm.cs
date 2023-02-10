@@ -25,15 +25,15 @@ public class CreateCharacterVm : BaseVm {
 
     public CreateCharacterVm(SaveStore saveStore, INavigationService gameNavigationService) {
         CreateCharacterCommand = new RelayCommand(
-            parameter => {
+            _ => {
                 Character player = new Character { Name = _name };
 
-                saveStore.CurrentSave = new Save { World = { Player = new Character { Name = _name } } };
+                saveStore.CurrentSave = new Save(new World(player));
                 
                 saveStore.CurrentSave!.World.InitializeNpcs();
 
                 Textline textline = new Textline();
-                textline.TextParts.Add(new Tuple<System.Windows.Media.Color, string>(Colors.White, "You wake up."));
+                textline.TextParts.Add(new Tuple<Color, string>(Colors.White, "You wake up."));
                 List<Textline> textlines = new();
                 textlines.Add(textline);
                 saveStore.CurrentSave!.SetSerializableTextLines(textlines);
