@@ -9,7 +9,7 @@ using MVVMEssentials.ViewModels;
 using MyGame.WPF.Core.Services;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.ViewModels;
-using MyGame.WPF.Views;
+using MyGame.WPF.MVVM.Views;
 
 namespace MyGame.WPF;
 

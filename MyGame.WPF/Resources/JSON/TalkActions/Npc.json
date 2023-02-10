@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 999,
+    "Label": "Say goodbye",
+    "EndConversation": true,
+    "PlayerDialog": "Bye !",
+    "Results": [
+      {
+        "NpcDialog": "Yeah get lost.",
+        "MinRelationship": -999,
+        "MaxRelationship": 0
+      },
+      {
+        "NpcDialog": "Goodbye.",
+        "MinRelationship": 0,
+        "MaxRelationship": 33
+      },
+      {
+        "NpcDialog": "See you later, it was nice to talk to you !",
+        "MinRelationship": 33,
+        "MaxRelationship": 66
+      },
+      {
+        "NpcDialog": "Bye I can't wait to see you again !",
+        "MinRelationship": 66,
+        "MaxRelationship": 999
+      }
+    ]
+  }
+]

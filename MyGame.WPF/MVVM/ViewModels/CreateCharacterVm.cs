@@ -7,7 +7,6 @@ using MVVMEssentials.ViewModels;
 using MyGame.WPF.Core.Commands;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
-using MyGame.WPF.MVVM.Models.Situations.Home;
 
 namespace MyGame.WPF.MVVM.ViewModels;
 
@@ -31,16 +30,8 @@ public class CreateCharacterVm : BaseVm {
 
                 saveStore.CurrentSave = new Save { World = { Player = new Character { Name = _name } } };
                 
-                Npc npc = new() { Name = "Test"};
+                saveStore.CurrentSave!.World.InitializeNpcs();
 
-                npc.Schedule.Add(
-                    new Tuple<string, DayOfWeek, TimeSpan, TimeSpan, bool>(
-                        LivingRoomSituation.Instance.LocationName, DayOfWeek.Sunday, new TimeSpan(9, 0, 0), new TimeSpan(10, 0, 0), false
-                    )
-                );
-
-                saveStore.CurrentSave!.World.Npcs.Add(npc);
-                
                 Textline textline = new Textline();
                 textline.TextParts.Add(new Tuple<System.Windows.Media.Color, string>(Colors.White, "You wake up."));
                 List<Textline> textlines = new();

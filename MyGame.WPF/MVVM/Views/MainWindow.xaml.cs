@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace MyGame.WPF.Views;
+namespace MyGame.WPF.MVVM.Views;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

@@ -1,20 +1,22 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Windows.Media;
 using MVVMEssentials.Commands;
 using MVVMEssentials.Services;
 using MVVMEssentials.ViewModels;
 using MyGame.WPF.Core.Commands;
+using MyGame.WPF.Core.Helpers;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
-using MyGame.WPF.MVVM.Models.Situations;
+using MyGame.WPF.MVVM.Models.Actions;
+using MyGame.WPF.MVVM.Models.Npcs;
 
 namespace MyGame.WPF.MVVM.ViewModels;
 
 public class GameVm : BaseVm {
     private readonly SaveStore _saveStore;
+    private readonly StringStore _stringStore;
+    private readonly INavigationService _informationNavigationService;
     public string? ImagePath => _saveStore.CurrentSave!.ImagePath;
 
     public DateTime Date => _saveStore.CurrentSave!.World.Date;
@@ -40,6 +42,9 @@ public class GameVm : BaseVm {
     public ObservableCollection<string> ActionChoices => new(_saveStore.CurrentSave!.ActionChoices);
 
     public ObservableCollection<string> MovementsChoices => new(_saveStore.CurrentSave!.MovementsChoices);
+    
+    public ObservableCollection<TalkAction> PossibleTalkActions => new(_saveStore.CurrentSave!.PossibleTalkActions);
+    
     public Npc? NpcAction => _saveStore.CurrentSave!.NpcAction;
     
     public bool PlayerCanAct => _saveStore.CurrentSave!.PlayerCanAct;
@@ -60,6 +65,7 @@ public class GameVm : BaseVm {
     public ICommand InventoryNavigateCommand { get; set; }
     public ICommand MakeChoiceCommand { get; set; }
     public ICommand EngageTalkCommand { get; set; }
+    public ICommand TalkCommand { get; set; }
     public ICommand SaveGameCommand { get; set; }
     public ICommand LoadGameCommand { get; set; }
     public ICommand MainMenuNavigateCommand { get; set; }
@@ -69,7 +75,9 @@ public class GameVm : BaseVm {
         INavigationService inventoryNavigationService, INavigationService mainMenuNavigationService, INavigationService informationNavigationService
     ) {
         _saveStore = saveStore;
-        
+        _stringStore = stringStore;
+        _informationNavigationService = informationNavigationService;
+
         _saveStore.CurrentSaveChanged += OnCurrentSaveChanged;
 
         CharacterNavigateCommand = new RelayCommand(
@@ -85,14 +93,29 @@ public class GameVm : BaseVm {
         MakeChoiceCommand = new MakeChoiceCommand(_saveStore);
         EngageTalkCommand = new RelayCommand(
             parameter => {
-                _saveStore.CurrentSave!.NpcAction = (Npc)parameter!;
-                _saveStore.CurrentSave!.IsInChat = true;
-                _saveStore.Refresh();
+                EngageTalk((Npc)parameter!);
+            }
+        );
+        
+        TalkCommand = new RelayCommand(
+            parameter => {
+                Talk((TalkAction)parameter!);
             }
         );
 
-        LoadGameCommand = new LoadGameCommand(_saveStore, stringStore, null, informationNavigationService);
+        LoadGameCommand = new LoadGameCommand(_saveStore, stringStore, null, _informationNavigationService);
         MainMenuNavigateCommand = new NavigateCommand(mainMenuNavigationService);
+    }
+
+    private async void EngageTalk(Npc npc) {
+        _saveStore.CurrentSave!.NpcAction = npc;
+        _saveStore.CurrentSave!.IsInChat = true;
+        await ActionHelper.HandleGreeting(_saveStore, _stringStore, _informationNavigationService);
+    }
+    
+    private async void Talk(TalkAction action) {
+        await ActionHelper.HandleTalk(_saveStore, _stringStore, _informationNavigationService, action);
+        
     }
 
     private void OnCurrentSaveChanged() {
@@ -103,6 +126,7 @@ public class GameVm : BaseVm {
             OnPropertyChanged(nameof(DisplayedTextLines));
             OnPropertyChanged(nameof(ActionChoices));
             OnPropertyChanged(nameof(MovementsChoices));
+            OnPropertyChanged(nameof(PossibleTalkActions));
             OnPropertyChanged(nameof(NpcsInLocation));
             OnPropertyChanged(nameof(NpcAction));
             OnPropertyChanged(nameof(IsInChat));

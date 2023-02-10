@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MyGame.WPF.MVVM.Models; 
+namespace MyGame.WPF.MVVM.Models.Npcs; 
 
 public class Npc : Character {
     public int Relationship { get; set; } = 0;

@@ -1,0 +1,20 @@
+﻿[
+  {
+    "Id": 1,
+    "Text": "It's you again...",
+    "MinRelationship": -999,
+    "MaxRelationship": 0
+  },
+  {
+    "Id": 2,
+    "Text": "Hello.",
+    "MinRelationship": 0,
+    "MaxRelationship": 33
+  },
+  {
+    "Id": 3,
+    "Text": "Hi, nice to see you again !",
+    "MinRelationship": 33,
+    "MaxRelationship": 999
+  }
+]

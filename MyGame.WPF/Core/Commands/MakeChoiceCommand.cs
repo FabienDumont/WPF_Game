@@ -4,6 +4,7 @@ using System.Windows.Media;
 using MVVMEssentials.Commands;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
+using MyGame.WPF.MVVM.Models.Npcs;
 using MyGame.WPF.MVVM.Models.Situations;
 
 namespace MyGame.WPF.Core.Commands; 

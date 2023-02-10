@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MyGame.WPF.MVVM.Models.Npcs;
 
 namespace MyGame.WPF.MVVM.Models.Situations; 
 

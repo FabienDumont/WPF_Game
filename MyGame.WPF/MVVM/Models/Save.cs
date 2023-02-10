@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Media;
+using MyGame.WPF.MVVM.Models.Actions;
+using MyGame.WPF.MVVM.Models.Npcs;
 using MyGame.WPF.MVVM.Models.Situations;
 using MyGame.WPF.MVVM.Models.Situations.Home;
 using Color = System.Drawing.Color;
@@ -37,6 +38,8 @@ public class Save {
         }
     }
 
+    public List<TalkAction> PossibleTalkActions { get; set; } = new();
+
     public bool IsInChat { get; set; } = false;
 
     public bool PlayerCanAct { get; set; } = true;
@@ -71,5 +74,16 @@ public class Save {
 
             SerializableTextLines.Add(textLineSerializable);
         }
+    }
+
+    public void AddSerializableTextLines(Textline textline) {
+        List<Tuple<Color, string>> textLineSerializable = new List<Tuple<Color, string>>();
+        foreach (Tuple<System.Windows.Media.Color, string> textPart in textline.TextParts) {
+            textLineSerializable.Add(
+                new Tuple<Color, string>(Color.FromArgb(textPart.Item1.A, textPart.Item1.R, textPart.Item1.G, textPart.Item1.B), textPart.Item2)
+            );
+        }
+
+        SerializableTextLines.Add(textLineSerializable);
     }
 }

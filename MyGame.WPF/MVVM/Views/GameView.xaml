@@ -206,8 +206,9 @@
             </Grid>
             <Grid Grid.Row="1"
                   Background="#333337"
-                  Visibility="{Binding Path=IsInNpcInteraction, Converter={StaticResource BoolToVisConverter}}">
-                <ListView ItemsSource="{Binding ActionChoices}"
+                  Visibility="{Binding Path=IsInChat, Converter={StaticResource BoolToVisConverter}}">
+                <ListView Visibility="{Binding Path=PlayerCanAct, Converter={StaticResource BoolToVisConverter}}"
+                          ItemsSource="{Binding PossibleTalkActions}"
                           Background="Transparent"
                           BorderBrush="Transparent">
                     <ListView.ItemContainerStyle>
@@ -217,7 +218,7 @@
                                     <DataTemplate>
                                         <Button Width="500"
                                                 Margin="5,0,0,5"
-                                                Content="{Binding}"
+                                                Content="{Binding Label}"
                                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.TalkCommand}"
                                                 CommandParameter="{Binding}" />
                                     </DataTemplate>
@@ -266,8 +267,14 @@
                         <Setter Property="ContentTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock VerticalAlignment="Center">
+                                    <Grid Margin="0 10 0 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="70"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" 
+                                                   VerticalAlignment="Center">
                                             <TextBlock.Foreground>
                                                 <SolidColorBrush Color="{Binding Color}" />
                                             </TextBlock.Foreground>
@@ -278,17 +285,23 @@
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
-                                        <Button Width="Auto"
-                                                Margin="5 0 0 0"
+                                        
+                                        <Button Grid.Column="1" 
+                                                Width="Auto"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
                                                 Content="View"
                                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.CharacterNavigateCommand}"
                                                 CommandParameter="{Binding}" />
-                                        <Button Width="Auto"
-                                                Margin="5 0 0 0"
+                                        
+                                        <Button Grid.Column="2" 
+                                                Width="Auto"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
                                                 Content="Talk"
                                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.EngageTalkCommand}"
                                                 CommandParameter="{Binding}" />
-                                    </StackPanel>
+                                    </Grid>
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>

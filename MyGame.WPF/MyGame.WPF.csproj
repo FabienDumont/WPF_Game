@@ -28,6 +28,14 @@
       <Resource Include="Resources\Images\BaseFemale.png" />
       <None Remove="Resources\Images\BaseMale.png" />
       <Resource Include="Resources\Images\BaseMale.png" />
+      <None Remove="Resources\JSON\Greetings\Npc.json" />
+      <EmbeddedResource Include="Resources\JSON\Greetings\Npc.json" />
+      <None Remove="Resources\JSON\Greetings\CustomNpc.json" />
+      <EmbeddedResource Include="Resources\JSON\Greetings\CustomNpc.json" />
+      <None Remove="Resources\JSON\TalkActions\Npc.json" />
+      <EmbeddedResource Include="Resources\JSON\TalkActions\Npc.json" />
+      <None Remove="Resources\JSON\TalkActions\CustomNpc.json" />
+      <EmbeddedResource Include="Resources\JSON\TalkActions\CustomNpc.json" />
     </ItemGroup>
 
 </Project>
