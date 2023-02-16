@@ -7,7 +7,9 @@ namespace MyGame.WPF.MVVM.Models;
 
 public class Save {
     public World World { get; set; }
+
     public string LocationName { get; set; }
+
     public Npc? NpcAction { get; set; } = null;
     public string? ImagePath { get; set; }
 

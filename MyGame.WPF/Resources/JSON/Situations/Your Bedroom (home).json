@@ -2,12 +2,16 @@
   "LocationName": "Your Bedroom (home)",
   "MovementChoices": [
     {
-      "Label": "Living Room"
+      "Label": "Living Room",
+      "NextSituation": "Living Room (home)",
+      "Text": "You go into the living room."
     }
   ],
   "ActionChoices": [
     {
       "Label": "Take a nap",
+      "NextSituation": "Your Bedroom (home)",
+      "Text": "You sleep for one hour.",
       "AvailableTimespans": [
         {
           "TimeBegin": "8:00",
@@ -21,6 +25,7 @@
     },
     {
       "Label": "Sleep (until 8am)",
+      "Text": "You sleep until the morning.",
       "AvailableTimespans": [
         {
           "TimeBegin": "20:00",

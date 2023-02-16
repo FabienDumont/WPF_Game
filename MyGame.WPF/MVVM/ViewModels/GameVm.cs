@@ -30,11 +30,11 @@ public class GameVm : BaseVm {
     public ObservableCollection<SituationAction> ActionChoices => new(_saveStore.CurrentSave!.PossibleActionChoices);
 
     public ObservableCollection<Movement> MovementsChoices => new(_saveStore.CurrentSave!.PossibleMovementChoices);
-    
+
     public ObservableCollection<TalkAction> PossibleTalkActions => new(_saveStore.CurrentSave!.PossibleTalkActions);
-    
+
     public Npc? NpcAction => _saveStore.CurrentSave!.NpcAction;
-    
+
     public bool PlayerCanAct => _saveStore.CurrentSave!.PlayerCanAct;
 
     public bool IsInNpcInteraction {
@@ -51,7 +51,8 @@ public class GameVm : BaseVm {
 
     public ICommand CharacterNavigateCommand { get; set; }
     public ICommand InventoryNavigateCommand { get; set; }
-    public ICommand MakeChoiceCommand { get; set; }
+    public ICommand MakeChoiceActionCommand { get; set; }
+    public ICommand MakeChoiceMovementCommand { get; set; }
     public ICommand EngageTalkCommand { get; set; }
     public ICommand TalkCommand { get; set; }
     public ICommand SaveGameCommand { get; set; }
@@ -68,6 +69,8 @@ public class GameVm : BaseVm {
 
         _saveStore.CurrentSaveChanged += OnCurrentSaveChanged;
 
+        SetActions();
+
         CharacterNavigateCommand = new RelayCommand(
             parameter => {
                 characterStore.CurrentCharacter = (Character)parameter!;
@@ -78,18 +81,12 @@ public class GameVm : BaseVm {
         InventoryNavigateCommand = new NavigateCommand(inventoryNavigationService);
         SaveGameCommand = new SaveGameCommand(_saveStore);
 
-        MakeChoiceCommand = new MakeChoiceCommand(_saveStore);
-        EngageTalkCommand = new RelayCommand(
-            parameter => {
-                EngageTalk((Npc)parameter!);
-            }
-        );
-        
-        TalkCommand = new RelayCommand(
-            parameter => {
-                Talk((TalkAction)parameter!);
-            }
-        );
+        MakeChoiceActionCommand = new RelayCommand(parameter => { SituationHelper.ProceedChoiceAction(_saveStore, (SituationAction)parameter!); });
+        MakeChoiceMovementCommand = new RelayCommand(parameter => { SituationHelper.ProceedChoiceMovement(_saveStore, (Movement)parameter!); });
+
+        EngageTalkCommand = new RelayCommand(parameter => { EngageTalk((Npc)parameter!); });
+
+        TalkCommand = new RelayCommand(parameter => { Talk((TalkAction)parameter!); });
 
         LoadGameCommand = new LoadGameCommand(_saveStore, stringStore, null, _informationNavigationService);
         MainMenuNavigateCommand = new NavigateCommand(mainMenuNavigationService);
@@ -100,7 +97,7 @@ public class GameVm : BaseVm {
         _saveStore.CurrentSave!.IsInChat = true;
         await ActionHelper.HandleGreeting(_saveStore, _stringStore, _informationNavigationService);
     }
-    
+
     private async void Talk(TalkAction action) {
         await ActionHelper.HandleTalk(_saveStore, _stringStore, _informationNavigationService, action);
     }

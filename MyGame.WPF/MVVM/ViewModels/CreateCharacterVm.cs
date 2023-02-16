@@ -35,6 +35,8 @@ public class CreateCharacterVm : BaseVm {
                 
                 saveStore.CurrentSave!.World.InitializeNpcs();
 
+                saveStore.CurrentSave!.LocationName = "Your Bedroom (home)";
+
                 Textline textline = new Textline();
                 textline.TextParts.Add(new Tuple<Color, string>(Colors.White, "You wake up."));
                 List<Textline> textlines = new();

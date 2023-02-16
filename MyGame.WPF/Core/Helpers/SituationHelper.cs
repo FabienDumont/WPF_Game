@@ -24,10 +24,20 @@ public static class SituationHelper {
         return npcs;
     }
 
-    public static Tuple<string, Situation> ProceedChoice(SaveStore saveStore, string choice) {
+    public static void ProceedChoiceAction(SaveStore saveStore, SituationAction choice) {
         Save save = saveStore.CurrentSave!;
 
-        return new Tuple<string, Situation>("lol", new Situation());
+        save.LocationName = choice.NextSituation;
+        
+        saveStore.Refresh();
+    }
+    
+    public static void ProceedChoiceMovement(SaveStore saveStore, Movement choice) {
+        Save save = saveStore.CurrentSave!;
+
+        save.LocationName = choice.NextSituation;
+        
+        saveStore.Refresh();
     }
 
     public static Tuple<string, string?> GetImageSituation(World world) {
@@ -38,15 +48,21 @@ public static class SituationHelper {
         Save save = saveStore.CurrentSave!;
 
         try {
-            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"MyGame.WPF.Resources.JSON.Situation.{save.LocationName}.json") ??
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"MyGame.WPF.Resources.JSON.Situations.{save.LocationName}.json") ??
                             throw new InvalidOperationException($"The file {save.LocationName}.json doesn't exist.");
 
             StreamReader reader = new StreamReader(stream);
             string result = reader.ReadToEnd();
 
             Situation situation = JsonConvert.DeserializeObject<Situation>(result)!;
-            
-            
+
+            save.LocationName = situation.LocationName;
+
+            save.PossibleMovementChoices = situation.MovementChoices;
+            save.PossibleActionChoices = situation.ActionChoices;
+
+            saveStore.Refresh();
+
         } catch (Exception e) {
             stringStore.CurrentString = e.Message;
             informationNavigationService.Navigate();

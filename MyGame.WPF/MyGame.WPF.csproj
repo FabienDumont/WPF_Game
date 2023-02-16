@@ -36,6 +36,8 @@
       <None Remove="Resources\JSON\TalkActions\CustomNpc.json" />
       <None Remove="Resources\JSON\Npcs\CustomNpc.json" />
       <None Remove="Resources\JSON\Npc.json" />
+      <None Remove="Resources\JSON\Situations\YourBedroom.json" />
+      <EmbeddedResource Include="Resources\JSON\Situations\Your Bedroom (home).json" />
     </ItemGroup>
 
 </Project>
