@@ -1,0 +1,125 @@
+﻿{
+  "Schedule": [
+    {
+      "LocationId": "Living Room (home)",
+      "Day": 1,
+      "TimeBegin": "09:00",
+      "TimeEnd": "9:59"
+    }
+  ],
+  "Greetings": [
+    {
+      "Id": 1,
+      "Text": "It's you again...",
+      "MinRelationship": -999,
+      "MaxRelationship": 0
+    },
+    {
+      "Id": 2,
+      "Text": "Hello.",
+      "MinRelationship": 0,
+      "MaxRelationship": 33
+    },
+    {
+      "Id": 3,
+      "Text": "Hi, nice to see you again !",
+      "MinRelationship": 33,
+      "MaxRelationship": 999
+    }
+  ],
+  "TalkActions": [
+    {
+      "Id": 1,
+      "Label": "Ask something",
+      "PlayerDialog": "Can I ask you something ?",
+      "Results": [
+        {
+          "NpcDialog": "No, I don't like you.",
+          "MinRelationship": -999,
+          "MaxRelationship": 0,
+          "Success": false
+        },
+        {
+          "NpcDialog": "Yeah sure.",
+          "MinRelationship": 0,
+          "MaxRelationship": 999,
+          "Success": true
+        }
+      ],
+      "NextTalkActions": [
+        {
+          "NextActionId": 2
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "Label": "Ask what is love",
+      "NeedPrevious": true,
+      "PlayerDialog": "What is love ?",
+      "Results": [
+        {
+          "NpcDialog": "I don't know.",
+          "MinRelationship": -999,
+          "MaxRelationship": 999
+        }
+      ]
+    },
+    {
+      "Id": 10,
+      "Label": "Praise",
+      "PlayerDialog": "You are great !",
+      "Results": [
+        {
+          "NpcDialog": "Thank you !",
+          "MinRelationship": -999,
+          "MaxRelationship": 999,
+          "EffectRelationship": 10,
+          "AddedMinutes": 1
+        }
+      ]
+    },
+    {
+      "Id": 20,
+      "Label": "Insult",
+      "PlayerDialog": "You are dumb !",
+      "Results": [
+        {
+          "NpcDialog": "Get lost.",
+          "MinRelationship": -999,
+          "MaxRelationship": 999,
+          "EffectRelationship": -10,
+          "AddedMinutes": 30
+        }
+      ]
+    },
+    {
+      "Id": 999,
+      "Label": "Say goodbye",
+      "EndConversation": true,
+      "PlayerDialog": "Bye !",
+      "Results": [
+        {
+          "NpcDialog": "Yeah get lost.",
+          "MinRelationship": -999,
+          "MaxRelationship": 0
+        },
+        {
+          "NpcDialog": "Goodbye.",
+          "MinRelationship": 0,
+          "MaxRelationship": 33
+        },
+        {
+          "NpcDialog": "See you later, it was nice to talk to you !",
+          "MinRelationship": 33,
+          "MaxRelationship": 66
+        },
+        {
+          "NpcDialog": "Bye I can't wait to see you again !",
+          "MinRelationship": 66,
+          "MaxRelationship": 999
+        }
+      ]
+    }
+  ]
+}

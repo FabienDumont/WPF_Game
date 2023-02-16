@@ -8,8 +8,7 @@ using MyGame.WPF.Core.Commands;
 using MyGame.WPF.Core.Helpers;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
-using MyGame.WPF.MVVM.Models.Actions;
-using MyGame.WPF.MVVM.Models.Npcs;
+using MyGame.WPF.MVVM.Models.Talk;
 
 namespace MyGame.WPF.MVVM.ViewModels;
 
@@ -22,26 +21,15 @@ public class GameVm : BaseVm {
     public DateTime Date => _saveStore.CurrentSave!.World.Date;
     public Character Player => _saveStore.CurrentSave!.World.Player;
 
-    public string LocationName => _saveStore.CurrentSave!.Situation.LocationName;
+    public string LocationName => _saveStore.CurrentSave!.LocationName;
 
-    public ObservableCollection<Npc> NpcsInLocation {
-        get {
-            ObservableCollection<Npc> npcs = new ObservableCollection<Npc>();
-            if (!_saveStore.CurrentSave!.TalkingBlocked) {
-                foreach (Npc npc in _saveStore.CurrentSave!.Situation.GetNpcs(_saveStore.CurrentSave!.World)) {
-                    npcs.Add(npc);
-                }
-            }
-
-            return npcs;
-        }
-    }
+    public ObservableCollection<Npc> NpcsInLocation => new(SituationHelper.GetNpcs(_saveStore));
 
     public ObservableCollection<Textline> DisplayedTextLines => new(_saveStore.CurrentSave!.GetTextLines());
 
-    public ObservableCollection<string> ActionChoices => new(_saveStore.CurrentSave!.ActionChoices);
+    public ObservableCollection<SituationAction> ActionChoices => new(_saveStore.CurrentSave!.PossibleActionChoices);
 
-    public ObservableCollection<string> MovementsChoices => new(_saveStore.CurrentSave!.MovementsChoices);
+    public ObservableCollection<Movement> MovementsChoices => new(_saveStore.CurrentSave!.PossibleMovementChoices);
     
     public ObservableCollection<TalkAction> PossibleTalkActions => new(_saveStore.CurrentSave!.PossibleTalkActions);
     
@@ -115,7 +103,10 @@ public class GameVm : BaseVm {
     
     private async void Talk(TalkAction action) {
         await ActionHelper.HandleTalk(_saveStore, _stringStore, _informationNavigationService, action);
-        
+    }
+
+    private void SetActions() {
+        SituationHelper.SetActions(_saveStore, _stringStore, _informationNavigationService);
     }
 
     private void OnCurrentSaveChanged() {

@@ -1,4 +1,4 @@
-﻿namespace MyGame.WPF.MVVM.Models.Actions; 
+﻿namespace MyGame.WPF.MVVM.Models.Talk; 
 
 public class NextTalkAction {
     public int NextActionId { get; set; }

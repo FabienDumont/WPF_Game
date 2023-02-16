@@ -1,4 +1,4 @@
-﻿namespace MyGame.WPF.MVVM.Models.Actions; 
+﻿namespace MyGame.WPF.MVVM.Models.Talk; 
 
 public class TalkActionResult {
     public string? NpcDialog { get; set; }

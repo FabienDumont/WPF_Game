@@ -1,42 +1,21 @@
 using System;
 using System.Collections.Generic;
-using MyGame.WPF.MVVM.Models.Actions;
-using MyGame.WPF.MVVM.Models.Npcs;
-using MyGame.WPF.MVVM.Models.Situations;
-using MyGame.WPF.MVVM.Models.Situations.Home;
+using MyGame.WPF.MVVM.Models.Talk;
 using Color = System.Drawing.Color;
 
 namespace MyGame.WPF.MVVM.Models;
 
 public class Save {
     public World World { get; set; }
-    public Situation Situation { get; set; } = YourBedroomSituation.Instance;
+    public string LocationName { get; set; }
     public Npc? NpcAction { get; set; } = null;
     public string? ImagePath { get; set; }
 
     public List<List<Tuple<Color, string>>> SerializableTextLines { get; set; } = new();
 
-    public List<string> ActionChoices {
-        get {
-            List<string> choices = new List<string>();
-            foreach (string choice in Situation.GetActionChoices(World)) {
-                choices.Add(choice);
-            }
+    public List<SituationAction> PossibleActionChoices { get; set; } = new();
 
-            return choices;
-        }
-    }
-
-    public List<string> MovementsChoices {
-        get {
-            List<string> choices = new List<string>();
-            foreach (string choice in Situation.GetMovementChoices(World)) {
-                choices.Add(choice);
-            }
-
-            return choices;
-        }
-    }
+    public List<Movement> PossibleMovementChoices { get; set; } = new();
 
     public List<TalkAction> PossibleTalkActions { get; set; } = new();
 
@@ -44,7 +23,7 @@ public class Save {
 
     public bool PlayerCanAct { get; set; } = true;
     public bool TalkingBlocked { get; set; } = false;
-    
+
     public Save(World world) {
         World = world;
     }

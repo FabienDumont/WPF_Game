@@ -8,9 +8,9 @@ using System.Windows.Media;
 using MVVMEssentials.Services;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
-using MyGame.WPF.MVVM.Models.Actions;
-using MyGame.WPF.MVVM.Models.Npcs;
+using MyGame.WPF.MVVM.Models.Talk;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MyGame.WPF.Core.Helpers;
 
@@ -24,18 +24,19 @@ public static class ActionHelper {
         save.SerializableTextLines.Clear();
 
         try {
-            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MyGame.WPF.Resources.JSON.Greetings.Npc.json") ??
-                            throw new InvalidOperationException("The file Greetings/Npc.json doesn't exist.");
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MyGame.WPF.Resources.JSON.Npcs.Npc.json") ??
+                            throw new InvalidOperationException("The file Npc.json doesn't exist.");
 
             StreamReader reader = new StreamReader(stream);
             string result = reader.ReadToEnd();
 
-            List<Greeting> greetings = JsonConvert.DeserializeObject<List<Greeting>>(result)!;
+            List<Greeting> greetings =
+                JsonConvert.DeserializeObject<List<Greeting>>(((JObject)JsonConvert.DeserializeObject(result)!)["Greetings"]!.ToString())!;
 
             string? filePathCustom = null;
-            
+
             if (!npc.Type.Equals("Random")) {
-                filePathCustom = $"MyGame.WPF.Resources.JSON.Greetings.{npc.Type}.json";
+                filePathCustom = $"MyGame.WPF.Resources.JSON.Npcs.{npc.Type}.json";
             }
 
             if (filePathCustom is not null) {
@@ -44,27 +45,32 @@ public static class ActionHelper {
 
                 reader = new StreamReader(stream);
                 result = reader.ReadToEnd();
+                
+                string? jsonString = ((JObject)JsonConvert.DeserializeObject(result)!)["Greetings"]?.ToString();
 
-                List<Greeting> greetingsCustom = JsonConvert.DeserializeObject<List<Greeting>>(result)!;
+                if (jsonString is not null) {
+                    List<Greeting> greetingsCustom =
+                        JsonConvert.DeserializeObject<List<Greeting>>(jsonString)!;
 
-                foreach (Greeting g in greetings) {
-                    foreach (Greeting gCustom in greetingsCustom) {
-                        if (gCustom.Id == g.Id) {
-                            if (gCustom.Text is not null) {
-                                g.Text = gCustom.Text;
+                    foreach (Greeting g in greetings) {
+                        foreach (Greeting gCustom in greetingsCustom) {
+                            if (gCustom.Id == g.Id) {
+                                if (gCustom.Text is not null) {
+                                    g.Text = gCustom.Text;
+                                }
+
+                                if (gCustom.MinRelationship is not null) {
+                                    g.MinRelationship = gCustom.MinRelationship;
+                                }
+
+                                if (gCustom.MaxRelationship is not null) {
+                                    g.MaxRelationship = gCustom.MaxRelationship;
+                                }
                             }
 
-                            if (gCustom.MinRelationship is not null) {
-                                g.MinRelationship = gCustom.MinRelationship;
+                            if (greetings.All(x => x.Id != gCustom.Id)) {
+                                greetings.Add(gCustom);
                             }
-
-                            if (gCustom.MaxRelationship is not null) {
-                                g.MaxRelationship = gCustom.MaxRelationship;
-                            }
-                        }
-
-                        if (greetings.All(x => x.Id != gCustom.Id)) {
-                            greetings.Add(gCustom);
                         }
                     }
                 }
@@ -100,7 +106,7 @@ public static class ActionHelper {
 
         save.PlayerCanAct = false;
 
-        var textline = new Textline();
+        Textline textline;
 
         TalkAction? talkAction = null;
         TalkActionResult? talkActionResult = null;
@@ -133,7 +139,7 @@ public static class ActionHelper {
                 if (talkActionResult!.EffectRelationship is not null) {
                     npc.Relationship += talkActionResult.EffectRelationship ?? default(int);
                 }
-                
+
                 if (talkActionResult.AddedMinutes is not null) {
                     save.World.Date = save.World.Date.AddMinutes(talkActionResult.AddedMinutes ?? default(int));
                 }
@@ -146,10 +152,10 @@ public static class ActionHelper {
                     await Task.Delay(500);
                 }
             }
-            
-            if (npc.GetLocation(save.World.Date) == null || !npc.GetLocation(save.World.Date)!.Item1.Equals(save.Situation.LocationName)) {
+
+            if (npc.GetLocation(save.World.Date) == null || !npc.GetLocation(save.World.Date)!.Equals(save.LocationName)) {
                 endConversation = true;
-                
+
                 textline = new();
                 textline.TextParts.Add(new Tuple<Color, string>(npc.Color, "Sorry, I have to go."));
                 save.AddSerializableTextLines(textline);
@@ -206,18 +212,19 @@ public static class ActionHelper {
     }
 
     public static List<TalkAction> GetTalkActions(Save save, Npc npc) {
-        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MyGame.WPF.Resources.JSON.TalkActions.Npc.json") ??
-                        throw new InvalidOperationException("The file TalkActions/Npc.json doesn't exist.");
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MyGame.WPF.Resources.JSON.Npcs.Npc.json") ??
+                        throw new InvalidOperationException("The file Npc.json doesn't exist.");
 
         StreamReader reader = new StreamReader(stream);
         string result = reader.ReadToEnd();
 
-        List<TalkAction> talkActions = JsonConvert.DeserializeObject<List<TalkAction>>(result)!;
+        List<TalkAction> talkActions =
+            JsonConvert.DeserializeObject<List<TalkAction>>(((JObject)JsonConvert.DeserializeObject(result)!)["TalkActions"]!.ToString())!;
 
         string? filePathCustom = null;
-            
+
         if (!npc.Type.Equals("Random")) {
-            filePathCustom = $"MyGame.WPF.Resources.JSON.Greetings.{npc.Type}.json";
+            filePathCustom = $"MyGame.WPF.Resources.JSON.Npcs.{npc.Type}.json";
         }
 
         if (filePathCustom is not null) {
@@ -227,26 +234,30 @@ public static class ActionHelper {
             reader = new StreamReader(stream);
             result = reader.ReadToEnd();
 
-            List<TalkAction> talkActionsCustom = JsonConvert.DeserializeObject<List<TalkAction>>(result)!;
+            string? jsonString = ((JObject)JsonConvert.DeserializeObject(result)!)["TalkActions"]?.ToString();
 
-            foreach (TalkAction ta in talkActions) {
-                foreach (TalkAction gTa in talkActionsCustom) {
-                    if (gTa.Id == ta.Id) {
-                        if (gTa.Label is not null) {
-                            ta.Label = gTa.Label;
+            if (jsonString != null) {
+                List<TalkAction> talkActionsCustom = JsonConvert.DeserializeObject<List<TalkAction>>(jsonString)!;
+
+                foreach (TalkAction ta in talkActions) {
+                    foreach (TalkAction gTa in talkActionsCustom) {
+                        if (gTa.Id == ta.Id) {
+                            if (gTa.Label is not null) {
+                                ta.Label = gTa.Label;
+                            }
+
+                            if (gTa.PlayerDialog is not null) {
+                                ta.PlayerDialog = gTa.PlayerDialog;
+                            }
+
+                            if (gTa.Results is not null) {
+                                ta.Results = gTa.Results;
+                            }
                         }
 
-                        if (gTa.PlayerDialog is not null) {
-                            ta.PlayerDialog = gTa.PlayerDialog;
+                        if (talkActions.All(x => x.Id != gTa.Id)) {
+                            talkActions.Add(gTa);
                         }
-
-                        if (gTa.Results is not null) {
-                            ta.Results = gTa.Results;
-                        }
-                    }
-
-                    if (talkActions.All(x => x.Id != gTa.Id)) {
-                        talkActions.Add(gTa);
                     }
                 }
             }

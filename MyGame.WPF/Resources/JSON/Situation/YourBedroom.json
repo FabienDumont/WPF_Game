@@ -1,0 +1,36 @@
+﻿{
+  "LocationName": "Your Bedroom (home)",
+  "MovementChoices": [
+    {
+      "Label": "Living Room"
+    }
+  ],
+  "ActionChoices": [
+    {
+      "Label": "Take a nap",
+      "AvailableTimespans": [
+        {
+          "TimeBegin": "8:00",
+          "TimeEnd": "23:59"
+        },
+        {
+          "TimeBegin": "00:00",
+          "TimeEnd": "01:59"
+        }
+      ]
+    },
+    {
+      "Label": "Sleep (until 8am)",
+      "AvailableTimespans": [
+        {
+          "TimeBegin": "20:00",
+          "TimeEnd": "23:59"
+        },
+        {
+          "TimeBegin": "00:00",
+          "TimeEnd": "7:00"
+        }
+      ]
+    }
+  ]
+}

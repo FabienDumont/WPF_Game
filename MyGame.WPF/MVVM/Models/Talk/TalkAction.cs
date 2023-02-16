@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MyGame.WPF.MVVM.Models.Actions; 
+namespace MyGame.WPF.MVVM.Models.Talk; 
 
 public class TalkAction {
     public int Id { get; set; }

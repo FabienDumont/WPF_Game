@@ -24,6 +24,9 @@ public class CreateCharacterVm : BaseVm {
     public ICommand CreateCharacterCommand { get; set; }
 
     public CreateCharacterVm(SaveStore saveStore, INavigationService gameNavigationService) {
+        
+        Name = "Unknown";
+        
         CreateCharacterCommand = new RelayCommand(
             _ => {
                 Character player = new Character { Name = _name };

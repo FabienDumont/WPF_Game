@@ -3,5 +3,19 @@
   "Type": "CustomNpc",
   "Stats": {
     "Happiness": 80
-  }
+  },
+  "Schedule": [
+    {
+      "LocationId": "Living Room (home)",
+      "Day": 1,
+      "TimeBegin": "09:00",
+      "TimeEnd": "9:59"
+    }
+  ],
+  "Greetings": [
+    {
+      "Id": 2,
+      "Text": "Hey."
+    }
+  ]
 }
