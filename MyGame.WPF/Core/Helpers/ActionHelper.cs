@@ -32,10 +32,11 @@ public static class ActionHelper {
 
             List<Greeting> greetings = JsonConvert.DeserializeObject<List<Greeting>>(result)!;
 
-            string? filePathCustom = npc switch {
-                CustomNpc => $"MyGame.WPF.Resources.JSON.Greetings.{nameof(CustomNpc)}.json",
-                _ => null
-            };
+            string? filePathCustom = null;
+            
+            if (!npc.Type.Equals("Random")) {
+                filePathCustom = $"MyGame.WPF.Resources.JSON.Greetings.{npc.Type}.json";
+            }
 
             if (filePathCustom is not null) {
                 stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filePathCustom) ??
@@ -213,10 +214,11 @@ public static class ActionHelper {
 
         List<TalkAction> talkActions = JsonConvert.DeserializeObject<List<TalkAction>>(result)!;
 
-        string? filePathCustom = npc switch {
-            CustomNpc => $"MyGame.WPF.Resources.JSON.TalkActions.{nameof(CustomNpc)}.json",
-            _ => null
-        };
+        string? filePathCustom = null;
+            
+        if (!npc.Type.Equals("Random")) {
+            filePathCustom = $"MyGame.WPF.Resources.JSON.Greetings.{npc.Type}.json";
+        }
 
         if (filePathCustom is not null) {
             stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filePathCustom) ??

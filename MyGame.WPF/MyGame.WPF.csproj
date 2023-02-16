@@ -36,6 +36,8 @@
       <EmbeddedResource Include="Resources\JSON\TalkActions\Npc.json" />
       <None Remove="Resources\JSON\TalkActions\CustomNpc.json" />
       <EmbeddedResource Include="Resources\JSON\TalkActions\CustomNpc.json" />
+      <None Remove="Resources\JSON\Npcs\CustomNpc.json" />
+      <EmbeddedResource Include="Resources\JSON\Npcs\CustomNpc.json" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,7 @@
+{
+  "Name": "Custom Npc Name",
+  "Type": "CustomNpc",
+  "Stats": {
+    "Happiness": 80
+  }
+}

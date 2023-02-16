@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace MyGame.WPF.MVVM.Models.Npcs; 
 
 public class Npc : Character {
+    public string Type { get; set; } = "Random";
     public int Relationship { get; set; } = 0;
 
     public List<Tuple<string, DayOfWeek, TimeSpan, TimeSpan, bool>> Schedule = new();
