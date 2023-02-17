@@ -61,7 +61,7 @@ public class Save {
         }
     }
 
-    public void AddSerializableTextLines(Textline textline) {
+    public void AddSerializableTextLine(Textline textline) {
         List<Tuple<Color, string>> textLineSerializable = new List<Tuple<Color, string>>();
         foreach (Tuple<System.Windows.Media.Color, string> textPart in textline.TextParts) {
             textLineSerializable.Add(
@@ -75,6 +75,6 @@ public class Save {
     public void AddBlankTextline() {
         Textline textline = new();
         textline.TextParts.Add(new Tuple<System.Windows.Media.Color, string>(System.Windows.Media.Colors.White, ""));
-        AddSerializableTextLines(textline);
+        AddSerializableTextLine(textline);
     }
 }

@@ -3,7 +3,7 @@
 namespace MyGame.WPF.MVVM.Models; 
 
 public class AvailableTimespan {
-    public DayOfWeek Day { get; set; }
+    public DayOfWeek? Day { get; set; }
 
     public TimeSpan TimeBegin { get; set; }
 

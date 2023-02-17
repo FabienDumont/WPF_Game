@@ -10,8 +10,9 @@
   "ActionChoices": [
     {
       "Label": "Take a nap",
-      "NextSituation": "Your Bedroom (home)",
       "Text": "You sleep for one hour.",
+      "AddMinutes": 60,
+      "EffectEnergy": 10,
       "AvailableTimespans": [
         {
           "TimeBegin": "8:00",
@@ -26,6 +27,8 @@
     {
       "Label": "Sleep (until 8am)",
       "Text": "You sleep until the morning.",
+      "Special" : "Sleep",
+      "EffectEnergy": 100,
       "AvailableTimespans": [
         {
           "TimeBegin": "20:00",

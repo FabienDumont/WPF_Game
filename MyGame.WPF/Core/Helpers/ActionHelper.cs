@@ -88,7 +88,7 @@ public static class ActionHelper {
             }
 
             textline.TextParts.Add(new Tuple<Color, string>(npc.Color, greeting.Text!));
-            save.AddSerializableTextLines(textline);
+            save.AddSerializableTextLine(textline);
 
             saveStore.Refresh();
 
@@ -124,7 +124,7 @@ public static class ActionHelper {
                 if (talkAction.PlayerDialog is not null) {
                     textline = new();
                     textline.TextParts.Add(new Tuple<Color, string>(Colors.Honeydew, talkAction.PlayerDialog));
-                    save.AddSerializableTextLines(textline);
+                    save.AddSerializableTextLine(textline);
                     saveStore.Refresh();
                     await Task.Delay(500);
                 }
@@ -147,7 +147,7 @@ public static class ActionHelper {
                 if (talkActionResult.NpcDialog is not null) {
                     textline = new();
                     textline.TextParts.Add(new Tuple<Color, string>(npc.Color, talkActionResult.NpcDialog));
-                    save.AddSerializableTextLines(textline);
+                    save.AddSerializableTextLine(textline);
                     saveStore.Refresh();
                     await Task.Delay(500);
                 }
@@ -158,7 +158,7 @@ public static class ActionHelper {
 
                 textline = new();
                 textline.TextParts.Add(new Tuple<Color, string>(npc.Color, "Sorry, I have to go."));
-                save.AddSerializableTextLines(textline);
+                save.AddSerializableTextLine(textline);
                 saveStore.Refresh();
                 await Task.Delay(500);
             }
