@@ -2,7 +2,7 @@
   "Schedule": [
     {
       "LocationId": "Living Room (home)",
-      "Day": 1,
+      "Day": 2,
       "TimeBegin": "09:00",
       "TimeEnd": "9:59"
     }

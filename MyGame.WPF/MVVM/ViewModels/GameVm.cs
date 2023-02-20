@@ -87,9 +87,8 @@ public class GameVm : BaseVm {
         SaveGameCommand = new SaveGameCommand(_saveStore);
 
         MakeChoiceActionCommand = new RelayCommand(parameter => { ProceedAction((SituationAction)parameter!); });
-        MakeChoiceMovementCommand = new RelayCommand(
-            parameter => { SituationHelper.ProceedMovement(_saveStore, (Movement)parameter!, stringStore, _informationNavigationService); }
-        );
+
+        MakeChoiceMovementCommand = new RelayCommand(parameter => { ProceedMovement((Movement)parameter!); });
 
         EngageTalkCommand = new RelayCommand(parameter => { EngageTalk((Npc)parameter!); });
 
@@ -111,6 +110,10 @@ public class GameVm : BaseVm {
 
     private async void ProceedAction(SituationAction action) {
         await SituationHelper.ProceedAction(_saveStore, action, _stringStore, _informationNavigationService);
+    }
+
+    private async void ProceedMovement(Movement movement) {
+        await SituationHelper.ProceedMovement(_saveStore, movement, _stringStore, _informationNavigationService);
     }
 
     private void SetActions() {

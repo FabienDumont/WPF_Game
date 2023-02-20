@@ -67,7 +67,7 @@ public static class SituationHelper {
         saveStore.Refresh();
     }
 
-    public async static Task ProceedAction(
+    public static async Task ProceedAction(
         SaveStore saveStore, SituationAction action, StringStore stringStore, INavigationService informationNavigationService
     ) {
         Save save = saveStore.CurrentSave!;
@@ -97,6 +97,7 @@ public static class SituationHelper {
 
         if (action.NextSituation != null) {
             save.Situation = GetSituationFromJson(action.NextSituation);
+            save.SerializableTextLines.Clear();
         }
 
         SetActions(saveStore, stringStore, informationNavigationService);
@@ -105,17 +106,28 @@ public static class SituationHelper {
         saveStore.Refresh();
     }
 
-    public static void ProceedMovement(SaveStore saveStore, Movement movement, StringStore stringStore, INavigationService informationNavigationService) {
+    public static async Task ProceedMovement(SaveStore saveStore, Movement movement, StringStore stringStore, INavigationService informationNavigationService) {
         Save save = saveStore.CurrentSave!;
+        save.PlayerCanAct = false;
+        saveStore.Refresh();
 
         if (movement.NextSituation != null) {
             save.Situation = GetSituationFromJson(movement.NextSituation);
+            save.SerializableTextLines.Clear();
         }
+        
+        Textline textline = new Textline();
+        textline.TextParts.Add(new Tuple<Color, string>(Colors.White, movement.Text));
+        
+        save.AddSerializableTextLine(textline);
+        await Task.Delay(500);
 
         SetActions(saveStore, stringStore, informationNavigationService);
+        save.PlayerCanAct = true;
+        saveStore.Refresh();
     }
 
-    public async static Task ProceedSpecialAction(SaveStore saveStore, string specialAction) {
+    public static async Task ProceedSpecialAction(SaveStore saveStore, string specialAction) {
         Save save = saveStore.CurrentSave!;
         if (specialAction.Equals("Sleep")) {
             if (save.World.Date.TimeOfDay < new TimeSpan(8, 0, 0)) {
