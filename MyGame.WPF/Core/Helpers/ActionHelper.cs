@@ -153,7 +153,7 @@ public static class ActionHelper {
                 }
             }
 
-            if (npc.GetLocation(save.World.Date) == null || !npc.GetLocation(save.World.Date)!.Equals(save.LocationName)) {
+            if (npc.GetLocation(save.World.Date) == null || !npc.GetLocation(save.World.Date)!.Equals(save.Situation.LocationName)) {
                 endConversation = true;
 
                 textline = new();

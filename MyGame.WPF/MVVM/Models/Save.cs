@@ -8,7 +8,7 @@ namespace MyGame.WPF.MVVM.Models;
 public class Save {
     public World World { get; set; }
 
-    public string LocationName { get; set; }
+    public Situation Situation { get; set; }
 
     public Npc? NpcAction { get; set; } = null;
     public string? ImagePath { get; set; }
@@ -25,6 +25,8 @@ public class Save {
 
     public bool PlayerCanAct { get; set; } = true;
     public bool TalkingBlocked { get; set; } = false;
+
+    public string GameOver { get; set; } = string.Empty;
 
     public Save(World world) {
         World = world;

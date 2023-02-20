@@ -26,6 +26,7 @@
     <ItemGroup>
       <EmbeddedResource Include="Resources\JSON\Npcs\CustomNpc.json" />
       <EmbeddedResource Include="Resources\JSON\Npcs\Npc.json" />
+      <EmbeddedResource Include="Resources\JSON\Situations\YourBedroom.json" />
       <None Remove="Resources\Images\BaseFemale.png" />
       <Resource Include="Resources\Images\BaseFemale.png" />
       <None Remove="Resources\Images\BaseMale.png" />
@@ -37,7 +38,8 @@
       <None Remove="Resources\JSON\Npcs\CustomNpc.json" />
       <None Remove="Resources\JSON\Npc.json" />
       <None Remove="Resources\JSON\Situations\YourBedroom.json" />
-      <EmbeddedResource Include="Resources\JSON\Situations\Your Bedroom (home).json" />
+      <None Remove="Resources\JSON\Situations\LivingRoom.json" />
+      <EmbeddedResource Include="Resources\JSON\Situations\LivingRoom.json" />
     </ItemGroup>
 
 </Project>

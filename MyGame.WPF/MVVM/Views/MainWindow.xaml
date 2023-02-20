@@ -30,6 +30,9 @@
             <DataTemplate DataType="{x:Type viewmodels:InformationVm}">
                 <local:InformationView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:GameOverVm}">
+                <local:GameOverView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:LayoutVm}">
                 <components:Layout/>
             </DataTemplate>

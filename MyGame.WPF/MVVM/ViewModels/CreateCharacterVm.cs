@@ -5,6 +5,7 @@ using System.Windows.Media;
 using MVVMEssentials.Services;
 using MVVMEssentials.ViewModels;
 using MyGame.WPF.Core.Commands;
+using MyGame.WPF.Core.Helpers;
 using MyGame.WPF.Core.Stores;
 using MyGame.WPF.MVVM.Models;
 
@@ -35,13 +36,11 @@ public class CreateCharacterVm : BaseVm {
                 
                 saveStore.CurrentSave!.World.InitializeNpcs();
 
-                saveStore.CurrentSave!.LocationName = "Your Bedroom (home)";
+                saveStore.CurrentSave!.Situation = SituationHelper.GetSituationFromJson("YourBedroom");
 
                 Textline textline = new Textline();
                 textline.TextParts.Add(new Tuple<Color, string>(Colors.White, "You wake up."));
-                List<Textline> textlines = new();
-                textlines.Add(textline);
-                saveStore.CurrentSave!.SetSerializableTextLines(textlines);
+                saveStore.CurrentSave!.AddSerializableTextLine(textline);
                 
                 new SaveGameCommand(saveStore).Execute(null);
                 gameNavigationService.Navigate();

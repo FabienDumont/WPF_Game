@@ -1,0 +1,10 @@
+﻿{
+  "LocationName": "Living room (home)",
+  "MovementChoices": [
+    {
+      "Label": "Your bedroom",
+      "NextSituation": "YourBedroom",
+      "Text": "You go into your bedroom."
+    }
+  ]
+}

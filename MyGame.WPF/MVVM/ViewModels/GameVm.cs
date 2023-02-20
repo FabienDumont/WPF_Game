@@ -16,12 +16,13 @@ public class GameVm : BaseVm {
     private readonly SaveStore _saveStore;
     private readonly StringStore _stringStore;
     private readonly INavigationService _informationNavigationService;
+    private readonly INavigationService _gameOverNavigationService;
     public string? ImagePath => _saveStore.CurrentSave!.ImagePath;
 
     public DateTime Date => _saveStore.CurrentSave!.World.Date;
     public Character Player => _saveStore.CurrentSave!.World.Player;
 
-    public string LocationName => _saveStore.CurrentSave!.LocationName;
+    public string LocationName => _saveStore.CurrentSave!.Situation.LocationName;
 
     public ObservableCollection<Npc> NpcsInLocation => new(SituationHelper.GetNpcs(_saveStore));
 
@@ -61,15 +62,19 @@ public class GameVm : BaseVm {
 
     public GameVm(
         SaveStore saveStore, StringStore stringStore, CharacterStore characterStore, INavigationService characterNavigationService,
-        INavigationService inventoryNavigationService, INavigationService mainMenuNavigationService, INavigationService informationNavigationService
+        INavigationService inventoryNavigationService, INavigationService mainMenuNavigationService, INavigationService informationNavigationService,
+        INavigationService gameOverNavigationService
     ) {
         _saveStore = saveStore;
         _stringStore = stringStore;
         _informationNavigationService = informationNavigationService;
+        _gameOverNavigationService = gameOverNavigationService;
 
         _saveStore.CurrentSaveChanged += OnCurrentSaveChanged;
 
-        SetActions();
+        if (saveStore.CurrentSave != null) {
+            SetActions();
+        }
 
         CharacterNavigateCommand = new RelayCommand(
             parameter => {
@@ -81,11 +86,9 @@ public class GameVm : BaseVm {
         InventoryNavigateCommand = new NavigateCommand(inventoryNavigationService);
         SaveGameCommand = new SaveGameCommand(_saveStore);
 
-        MakeChoiceActionCommand = new RelayCommand(
-            parameter => { SituationHelper.ProceedChoiceAction(_saveStore, (SituationAction)parameter!, stringStore, _informationNavigationService); }
-        );
+        MakeChoiceActionCommand = new RelayCommand(parameter => { ProceedAction((SituationAction)parameter!); });
         MakeChoiceMovementCommand = new RelayCommand(
-            parameter => { SituationHelper.ProceedChoiceMovement(_saveStore, (Movement)parameter!, stringStore, _informationNavigationService); }
+            parameter => { SituationHelper.ProceedMovement(_saveStore, (Movement)parameter!, stringStore, _informationNavigationService); }
         );
 
         EngageTalkCommand = new RelayCommand(parameter => { EngageTalk((Npc)parameter!); });
@@ -104,6 +107,10 @@ public class GameVm : BaseVm {
 
     private async void Talk(TalkAction action) {
         await ActionHelper.HandleTalk(_saveStore, _stringStore, _informationNavigationService, action);
+    }
+
+    private async void ProceedAction(SituationAction action) {
+        await SituationHelper.ProceedAction(_saveStore, action, _stringStore, _informationNavigationService);
     }
 
     private void SetActions() {
@@ -125,6 +132,10 @@ public class GameVm : BaseVm {
             OnPropertyChanged(nameof(IsInNpcInteraction));
             OnPropertyChanged(nameof(PlayerCanAct));
             OnPropertyChanged(nameof(ImagePath));
+
+            if (_saveStore.CurrentSave!.GameOver != string.Empty) {
+                _gameOverNavigationService.Navigate();
+            }
         }
     }
 }

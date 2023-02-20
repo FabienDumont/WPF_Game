@@ -60,7 +60,7 @@ public partial class App {
                     s => new GameVm(
                         s.GetRequiredService<SaveStore>(), s.GetRequiredService<StringStore>(), s.GetRequiredService<CharacterStore>(),
                         CreateCharacterNavigationService(s), CreateInventoryNavigationService(s), s.GetRequiredService<NavigationService<MainMenuVm>>(),
-                        CreateInformationNavigationService(s)
+                        CreateInformationNavigationService(s), s.GetRequiredService<NavigationService<GameOverVm>>()
                     )
                 );
 
@@ -69,6 +69,14 @@ public partial class App {
                 services.AddTransient(s => new CharacterVm(s.GetRequiredService<CharacterStore>(), s.GetRequiredService<CloseModalNavigationService>()));
                 services.AddTransient(s => new InventoryVm(s.GetRequiredService<CloseModalNavigationService>()));
                 services.AddTransient(s => new InformationVm(s.GetRequiredService<StringStore>(), s.GetRequiredService<CloseModalNavigationService>()));
+                
+                services.AddTransient<GameOverVm>(
+                    s => new GameOverVm(s.GetRequiredService<SaveStore>(), s.GetRequiredService<NavigationService<MainMenuVm>>())
+                );
+
+                services.AddSingleton(
+                    s => new NavigationService<GameOverVm>(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<GameOverVm>)
+                );
                 
 
                 // Nav Bar

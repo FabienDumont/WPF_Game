@@ -3,7 +3,7 @@
   "MovementChoices": [
     {
       "Label": "Living Room",
-      "NextSituation": "Living Room (home)",
+      "NextSituation": "LivingRoom",
       "Text": "You go into the living room."
     }
   ],
