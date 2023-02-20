@@ -4,7 +4,7 @@
     {
       "Label": "Living Room",
       "NextSituation": "LivingRoom",
-      "Text": "You go into the living room."
+      "Text": "You walk into the living room."
     }
   ],
   "ActionChoices": [
